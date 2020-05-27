@@ -840,33 +840,27 @@ fn do_not_panic_regression_tests() {
 fn do_not_detect_different_syntax_for_stdin_and_files() {
     let file = "regression_tests/issue_985.js";
 
-    let assert_cmd_for_file = bat()
+    let cmd_for_file = bat()
         .arg("--color=always")
         .arg("--map-syntax=*.js:Markdown")
         .arg(&format!("--file-name={}", file))
         .arg("--style=plain")
         .arg(file)
-        .assert();
-    let stdout_cmd_for_file = &assert_cmd_for_file.get_output().stdout;
-    println!("stdout_cmd_for_file={:#?}", String::from_utf8_lossy(stdout_cmd_for_file));
-    assert_cmd_for_file
+        .assert()
         .success();
 
-    let assert_cmd_for_stdin = bat()
+    let cmd_for_stdin = bat()
         .arg("--color=always")
         .arg("--map-syntax=*.js:Markdown")
         .arg("--style=plain")
         .arg(&format!("--file-name={}", file))
         .pipe_stdin(Path::new(EXAMPLES_DIR).join(file))
         .unwrap()
-        .assert();
-    let stdout_cmd_for_stdin = &assert_cmd_for_stdin.get_output().stdout;
-    println!("stdout_cmd_for_stdin={:#?}", String::from_utf8_lossy(stdout_cmd_for_stdin));
-    assert_cmd_for_stdin
+        .assert()
         .success();
 
     assert_eq!(
-        from_utf8(stdout_cmd_for_file).expect("output is valid utf-8"),
-        from_utf8(stdout_cmd_for_stdin).expect("output is valid utf-8")
+        from_utf8(&cmd_for_file.get_output().stdout).expect("output is valid utf-8"),
+        from_utf8(&cmd_for_stdin.get_output().stdout).expect("output is valid utf-8")
     );
 }
