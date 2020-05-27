@@ -28,7 +28,9 @@ fn basic() {
         .arg("test.txt")
         .assert();
     let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
     println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
     assert
         .success()
         .stdout("hello world\n")
@@ -37,9 +39,12 @@ fn basic() {
 
 #[test]
 fn stdin() {
-    bat()
+    let assert = bat()
         .write_stdin("foo\nbar\n")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("foo\nbar\n");
 }
@@ -74,73 +79,94 @@ fn concatenate_stdin() {
 
 #[test]
 fn concatenate_empty_first() {
-    bat()
+    let assert = bat()
         .arg("empty.txt")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("hello world\n");
 }
 
 #[test]
 fn concatenate_empty_last() {
-    bat()
+    let assert = bat()
         .arg("test.txt")
         .arg("empty.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("hello world\n");
 }
 
 #[test]
 fn concatenate_empty_both() {
-    bat()
+    let assert = bat()
         .arg("empty.txt")
         .arg("empty.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("");
 }
 
 #[test]
 fn concatenate_empty_between() {
-    bat()
+    let assert = bat()
         .arg("test.txt")
         .arg("empty.txt")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("hello world\nhello world\n");
 }
 
 #[test]
 fn concatenate_empty_first_and_last() {
-    bat()
+    let assert = bat()
         .arg("empty.txt")
         .arg("test.txt")
         .arg("empty.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("hello world\n");
 }
 
 #[test]
 fn concatenate_single_line() {
-    bat()
+    let assert = bat()
         .arg("single-line.txt")
         .arg("single-line.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("Single LineSingle Line");
 }
 
 #[test]
 fn concatenate_single_line_empty() {
-    bat()
+    let assert = bat()
         .arg("single-line.txt")
         .arg("empty.txt")
         .arg("single-line.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("Single LineSingle Line");
 }
@@ -419,55 +445,70 @@ fn do_not_exit_directory() {
 
 #[test]
 fn pager_basic() {
-    bat()
+    let assert = bat()
         .env("PAGER", "printf pager-output")
         .arg("--paging=always")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("pager-output");
 }
 
 #[test]
 fn pager_overwrite() {
-    bat()
+    let assert = bat()
         .env("PAGER", "printf other-pager")
         .env("BAT_PAGER", "printf pager-output")
         .arg("--paging=always")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("pager-output");
 }
 
 #[test]
 fn pager_disable() {
-    bat()
+    let assert = bat()
         .env("PAGER", "printf other-pager")
         .env("BAT_PAGER", "")
         .arg("--paging=always")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("hello world\n");
 }
 
 #[test]
 fn config_location_test() {
-    bat_with_config()
+    let assert = bat_with_config()
         .env("BAT_CONFIG_PATH", "bat.conf")
         .arg("--config-file")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("bat.conf\n");
 }
 
 #[test]
 fn config_read_arguments_from_file() {
-    bat_with_config()
+    let assert = bat_with_config()
         .env("BAT_CONFIG_PATH", "bat.conf")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("dummy-pager-from-config");
 }
@@ -475,11 +516,14 @@ fn config_read_arguments_from_file() {
 #[test]
 fn utf16() {
     // The output will be converted to UTF-8 with a leading UTF-8 BOM
-    bat()
+    let assert = bat()
         .arg("--plain")
         .arg("--decorations=always")
         .arg("test_UTF-16LE.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(std::str::from_utf8(b"\xEF\xBB\xBFhello world\n").unwrap());
 }
@@ -490,7 +534,9 @@ fn can_print_file_named_cache() {
         .arg("cache")
         .assert();
     let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
     println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
     assert
         .success()
         .stdout("test\n")
@@ -499,10 +545,15 @@ fn can_print_file_named_cache() {
 
 #[test]
 fn can_print_file_named_cache_with_additional_argument() {
-    bat_with_config()
+    let assert = bat_with_config()
         .arg("cache")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
+    assert
         .success()
         .stdout("test\nhello world\n")
         .stderr("");
@@ -510,9 +561,14 @@ fn can_print_file_named_cache_with_additional_argument() {
 
 #[test]
 fn can_print_file_starting_with_cache() {
-    bat_with_config()
+    let assert = bat_with_config()
         .arg("cache.c")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
+    assert
         .success()
         .stdout("test\n")
         .stderr("");
@@ -525,12 +581,15 @@ fn does_not_print_unwanted_file_named_cache() {
 
 #[test]
 fn unicode_wrap() {
-    bat_with_config()
+    let assert = bat_with_config()
         .arg("unicode-wrap.txt")
         .arg("--style=numbers,snip")
         .arg("--decorations=always")
         .arg("--terminal-width=40")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "   1 ビタミンA  ビタミンD  ビタミンE  ビ
@@ -567,14 +626,17 @@ fn unicode_wrap() {
 
 #[test]
 fn snip() {
-    bat()
+    let assert = bat()
         .arg("multiline.txt")
         .arg("--style=numbers,snip")
         .arg("--decorations=always")
         .arg("--line-range=1:2")
         .arg("--line-range=4:")
         .arg("--terminal-width=80")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "   1 line 1
@@ -587,25 +649,33 @@ fn snip() {
 
 #[test]
 fn empty_file_leads_to_empty_output_with_grid_enabled() {
-    bat()
+    let assert = bat()
         .arg("empty.txt")
         .arg("--style=grid")
         .arg("--decorations=always")
         .arg("--terminal-width=80")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("");
 }
 
 #[test]
 fn filename_basic() {
-    bat()
+    let assert = bat()
         .arg("test.txt")
         .arg("--decorations=always")
         .arg("--style=header")
         .arg("-r=0:0")
         .arg("--file-name=foo")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
+    assert
         .success()
         .stdout("File: foo\n")
         .stderr("");
@@ -613,13 +683,18 @@ fn filename_basic() {
 
 #[test]
 fn filename_binary() {
-    bat()
+    let assert = bat()
         .arg("test.binary")
         .arg("--decorations=always")
         .arg("--style=header")
         .arg("-r=0:0")
         .arg("--file-name=foo")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
+    assert
         .success()
         .stdout("File: foo   <BINARY>\n")
         .stderr("");
@@ -627,14 +702,19 @@ fn filename_binary() {
 
 #[test]
 fn filename_stdin() {
-    bat()
+    let assert = bat()
         .arg("--decorations=always")
         .arg("--style=header")
         .arg("-r=0:0")
         .arg("-")
         .write_stdin("stdin\n")
         .arg("--file-name=foo")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
+    assert
         .success()
         .stdout("File: foo\n")
         .stderr("");
@@ -643,12 +723,17 @@ fn filename_stdin() {
 #[test]
 fn filename_stdin_binary() {
     let vec = vec![0; 1];
-    bat_with_config()
+    let assert = bat_with_config()
         .arg("--decorations=always")
         .arg("--style=header")
         .write_stdin(vec)
         .arg("--file-name=foo")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
+    assert
         .success()
         .stdout("File: foo   <BINARY>\n")
         .stderr("");
@@ -656,7 +741,7 @@ fn filename_stdin_binary() {
 
 #[test]
 fn filename_multiple_ok() {
-    bat()
+    let assert = bat()
         .arg("--decorations=always")
         .arg("--style=header")
         .arg("-r=0:0")
@@ -664,7 +749,12 @@ fn filename_multiple_ok() {
         .arg("--file-name=foo")
         .arg("single-line.txt")
         .arg("--file-name=bar")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
+    assert
         .success()
         .stdout("File: foo\n\nFile: bar\n")
         .stderr("");
@@ -685,12 +775,17 @@ fn filename_multiple_err() {
 
 #[test]
 fn header_padding() {
-    bat()
+    let assert = bat()
         .arg("--decorations=always")
         .arg("--style=header")
         .arg("test.txt")
         .arg("single-line.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    println!("stdout={:#?}", stdout);
+    println!("stderr={:#?}", stderr);
+    assert
         .stdout("File: test.txt\nhello world\n\nFile: single-line.txt\nSingle Line\n")
         .stderr("");
 }
@@ -714,9 +809,12 @@ fn file_with_invalid_utf8_filename() {
         writeln!(file, "dummy content").expect("can write to file");
     }
 
-    bat()
+    let assert = bat()
         .arg(file_path.as_os_str())
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("dummy content\n");
 }
@@ -742,27 +840,33 @@ fn do_not_panic_regression_tests() {
 fn do_not_detect_different_syntax_for_stdin_and_files() {
     let file = "regression_tests/issue_985.js";
 
-    let cmd_for_file = bat()
+    let assert_cmd_for_file = bat()
         .arg("--color=always")
         .arg("--map-syntax=*.js:Markdown")
         .arg(&format!("--file-name={}", file))
         .arg("--style=plain")
         .arg(file)
-        .assert()
+        .assert();
+    let stdout_cmd_for_file = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout_cmd_for_file={:#?}", stdout_cmd_for_file);
+    assert_cmd_for_file
         .success();
 
-    let cmd_for_stdin = bat()
+    let assert_cmd_for_stdin = bat()
         .arg("--color=always")
         .arg("--map-syntax=*.js:Markdown")
         .arg("--style=plain")
         .arg(&format!("--file-name={}", file))
         .pipe_stdin(Path::new(EXAMPLES_DIR).join(file))
         .unwrap()
-        .assert()
+        .assert();
+    let stdout_cmd_for_stdin = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout_cmd_for_stdin={:#?}", stdout_cmd_for_stdin);
+    assert_cmd_for_stdin
         .success();
 
     assert_eq!(
-        from_utf8(&cmd_for_file.get_output().stdout).expect("output is valid utf-8"),
-        from_utf8(&cmd_for_stdin.get_output().stdout).expect("output is valid utf-8")
+        from_utf8(&assert_cmd_for_file.get_output().stdout).expect("output is valid utf-8"),
+        from_utf8(&assert_cmd_for_stdin.get_output().stdout).expect("output is valid utf-8")
     );
 }
