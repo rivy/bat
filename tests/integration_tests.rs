@@ -847,8 +847,8 @@ fn do_not_detect_different_syntax_for_stdin_and_files() {
         .arg("--style=plain")
         .arg(file)
         .assert();
-    let stdout_cmd_for_file = String::from_utf8_lossy(&assert_cmd_for_file.get_output().stdout);
-    println!("stdout_cmd_for_file={:#?}", stdout_cmd_for_file);
+    let stdout_cmd_for_file = &assert_cmd_for_file.get_output().stdout;
+    println!("stdout_cmd_for_file={:#?}", String::from_utf8_lossy(stdout_cmd_for_file));
     assert_cmd_for_file
         .success();
 
@@ -860,13 +860,13 @@ fn do_not_detect_different_syntax_for_stdin_and_files() {
         .pipe_stdin(Path::new(EXAMPLES_DIR).join(file))
         .unwrap()
         .assert();
-    let stdout_cmd_for_stdin = String::from_utf8_lossy(&assert_cmd_for_stdin.get_output().stdout);
-    println!("stdout_cmd_for_stdin={:#?}", stdout_cmd_for_stdin);
+    let stdout_cmd_for_stdin = &assert_cmd_for_stdin.get_output().stdout;
+    println!("stdout_cmd_for_stdin={:#?}", String::from_utf8_lossy(stdout_cmd_for_stdin));
     assert_cmd_for_stdin
         .success();
 
     assert_eq!(
-        from_utf8(&assert_cmd_for_file.get_output().stdout).expect("output is valid utf-8"),
-        from_utf8(&assert_cmd_for_stdin.get_output().stdout).expect("output is valid utf-8")
+        from_utf8(stdout_cmd_for_file).expect("output is valid utf-8"),
+        from_utf8(stdout_cmd_for_stdin).expect("output is valid utf-8")
     );
 }
