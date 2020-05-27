@@ -1,3 +1,8 @@
+examples/** text=auto eol=lf
+
+*.[Bb][Aa][Tt] text eol=crlf
+*.[Cc][Mm][Dd] text eol=crlf
+
 examples/* linguist-vendored
 snapshots/* linguist-vendored
 benchmarks/* linguist-vendored
