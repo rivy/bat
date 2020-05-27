@@ -24,9 +24,12 @@ fn bat() -> Command {
 
 #[test]
 fn basic() {
-    bat()
+    let assert = bat()
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("hello world\n")
         .stderr("");
@@ -43,22 +46,28 @@ fn stdin() {
 
 #[test]
 fn concatenate() {
-    bat()
+    let assert = bat()
         .arg("test.txt")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("hello world\nhello world\n");
 }
 
 #[test]
 fn concatenate_stdin() {
-    bat()
+    let assert = bat()
         .arg("test.txt")
         .arg("-")
         .arg("test.txt")
         .write_stdin("stdin\n")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("hello world\nstdin\nhello world\n");
 }
@@ -138,64 +147,82 @@ fn concatenate_single_line_empty() {
 
 #[test]
 fn line_numbers() {
-    bat()
+    let assert = bat()
         .arg("multiline.txt")
         .arg("--style=numbers")
         .arg("--decorations=always")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("   1 line 1\n   2 line 2\n   3 line 3\n   4 line 4\n");
 }
 
 #[test]
 fn line_range_2_3() {
-    bat()
+    let assert = bat()
         .arg("multiline.txt")
         .arg("--line-range=2:3")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("line 2\nline 3\n");
 }
 
 #[test]
 fn line_range_first_two() {
-    bat()
+    let assert = bat()
         .arg("multiline.txt")
         .arg("--line-range=:2")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("line 1\nline 2\n");
 }
 
 #[test]
 fn line_range_last_3() {
-    bat()
+    let assert = bat()
         .arg("multiline.txt")
         .arg("--line-range=2:")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("line 2\nline 3\nline 4\n");
 }
 
 #[test]
 fn line_range_multiple() {
-    bat()
+    let assert = bat()
         .arg("multiline.txt")
         .arg("--line-range=1:2")
         .arg("--line-range=4:4")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("line 1\nline 2\nline 4\n");
 }
 
 #[test]
 fn tabs_numbers() {
-    bat()
+    let assert = bat()
         .arg("tabs.txt")
         .arg("--tabs=4")
         .arg("--style=numbers")
         .arg("--decorations=always")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "   1     1   2   3   4
@@ -213,12 +240,15 @@ fn tabs_numbers() {
 
 #[test]
 fn tabs_passthrough_wrapped() {
-    bat()
+    let assert = bat()
         .arg("tabs.txt")
         .arg("--tabs=0")
         .arg("--style=plain")
         .arg("--decorations=always")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "	1	2	3	4
@@ -236,12 +266,15 @@ fn tabs_passthrough_wrapped() {
 
 #[test]
 fn tabs_4_wrapped() {
-    bat()
+    let assert = bat()
         .arg("tabs.txt")
         .arg("--tabs=4")
         .arg("--style=plain")
         .arg("--decorations=always")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "    1   2   3   4
@@ -259,12 +292,15 @@ fn tabs_4_wrapped() {
 
 #[test]
 fn tabs_8_wrapped() {
-    bat()
+    let assert = bat()
         .arg("tabs.txt")
         .arg("--tabs=8")
         .arg("--style=plain")
         .arg("--decorations=always")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "        1       2       3       4
@@ -282,12 +318,15 @@ fn tabs_8_wrapped() {
 
 #[test]
 fn tabs_passthrough() {
-    bat()
+    let assert = bat()
         .arg("tabs.txt")
         .arg("--tabs=0")
         .arg("--style=plain")
         .arg("--decorations=always")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "	1	2	3	4
@@ -305,12 +344,15 @@ fn tabs_passthrough() {
 
 #[test]
 fn tabs_4() {
-    bat()
+    let assert = bat()
         .arg("tabs.txt")
         .arg("--tabs=4")
         .arg("--style=plain")
         .arg("--decorations=always")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "    1   2   3   4
@@ -328,12 +370,15 @@ fn tabs_4() {
 
 #[test]
 fn tabs_8() {
-    bat()
+    let assert = bat()
         .arg("tabs.txt")
         .arg("--tabs=8")
         .arg("--style=plain")
         .arg("--decorations=always")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout(
             "        1       2       3       4
@@ -361,10 +406,13 @@ fn fail_directory() {
 
 #[test]
 fn do_not_exit_directory() {
-    bat()
+    let assert = bat()
         .arg("sub_directory")
         .arg("test.txt")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .stdout("hello world\n")
         .failure();
 }
@@ -438,9 +486,12 @@ fn utf16() {
 
 #[test]
 fn can_print_file_named_cache() {
-    bat_with_config()
+    let assert = bat_with_config()
         .arg("cache")
-        .assert()
+        .assert();
+    let stdout = String::from_utf8_lossy(&assert.get_output().stdout);
+    println!("stdout={:#?}", stdout);
+    assert
         .success()
         .stdout("test\n")
         .stderr("");
