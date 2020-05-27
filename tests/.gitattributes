@@ -2,3 +2,7 @@ examples/* linguist-vendored
 snapshots/* linguist-vendored
 benchmarks/* linguist-vendored
 benchmarks/test-src/* linguist-vendored
+
+* text eol=lf
+*.[Bb][Aa][Tt] text eol=crlf
+*.[Cc][Mm][Dd] text eol=crlf
